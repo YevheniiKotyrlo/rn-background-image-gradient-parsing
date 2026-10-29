@@ -1,79 +1,18 @@
 # rn-background-image-gradient-parsing
 
-![Build](https://github.com/YevheniiKotyrlo/rn-background-image-gradient-parsing/workflows/Pre%20Merge%20Checks/badge.svg)
+React Native's `backgroundImage` string parser drops a gradient whose colour stop is at a unitless `0`, and keeps the valid layers of a declaration that holds an invalid one. This repository is [React Native's reproducer template](https://github.com/react-native-community/reproducer-react-native) (React Native 0.88.1) with one change, `ReproducerApp/App.tsx`: four 96×96 boxes on a white screen, with `backgroundImage` set to `'linear-gradient(red 0, blue 100%)'`, `'linear-gradient(red 0%, blue 100%)'`, `'linear-gradient(red, blue), linear-gradient(notacolor, blue)'`, and the same two layers as objects.
 
-This is your new React Native Reproducer project.
+## Steps
 
-# Reproducer TODO list
+1. Clone and install:
+   ```sh
+   git clone https://github.com/YevheniiKotyrlo/rn-background-image-gradient-parsing
+   cd rn-background-image-gradient-parsing/ReproducerApp
+   yarn install
+   ```
+2. Build and install the app on an Android device: `yarn android`, or `cd android && ./gradlew assembleRelease` and `adb install -r app/build/outputs/apk/release/app-release.apk`.
+3. Open it and compare the boxes.
 
-- [x] 1. Create a new reproducer project.
-- [ ] 2. Git clone your repository locally.
-- [ ] 3. Edit the project to reproduce the failure you're seeing.
-- [ ] 4. Push your changes, so that Github Actions can run the CI.
-- [ ] 5. Make sure the repository is public and share the link with the issue you reported.
+Expected: the first two boxes the same red-to-blue gradient; the last two the same, and with an invalid layer, as in CSS, no gradient at all.
 
-# How to use this Reproducer
-
-This project has been created with `npx @react-native-community/cli init` and is a vanilla React Native app.
-
-> [!IMPORTANT]  
-> Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/set-up-your-environment) so that you have a working environment locally.
-
-## Step 1: Start the Metro Server
-
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
-
-To start Metro, run the following command from the _root_ of your React Native project:
-
-```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
-```
-
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
-```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### For iOS
-
-First, make sure you install dependencies with:
-
-```bash
-cd ios && bundle install && bundle exec pod install
-```
-
-Then you can run the iOS app with:
-
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+What I see on a Galaxy S23 (Android 14): the first box is not painted while the second is (`#7f0080` at its centre), and the string with the invalid layer paints its first gradient while the same layers as objects paint nothing.
